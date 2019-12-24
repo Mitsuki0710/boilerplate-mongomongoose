@@ -13,7 +13,8 @@
 // as MONGO_URI. Connect to the database using the following syntax:
 //
 // mongoose.connect(<Your URI>, { useNewUrlParser: true, useUnifiedTopology: true }); 
-
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGO_URI);
 
 
 /** # SCHEMAS and MODELS #
@@ -40,8 +41,10 @@
 // `default` values. See the [mongoose docs](http://mongoosejs.com/docs/guide.html).
 
 // <Your code here >
-
+var Schema = mongoose.Schema;
+var personSchema = new Schema({ name: String, age: Number, favoriteFoods: [String]});
 var Person /* = <Your Model> */
+Person = mongoose.model('Person', personSchema);
 
 // **Note**: Glitch is a real server, and in real servers interactions with
 // the db are placed in handler functions, to be called when some event happens
@@ -79,8 +82,12 @@ var Person /* = <Your Model> */
 // });
 
 var createAndSavePerson = function(done) {
-  
-  done(null /*, data*/);
+  var johnData = new Person({name: "John", age: 24, favoriteFoods:["coke", "burger"]});
+  johnData.save(function(err, data){
+    if(err) return console.error(err);
+    done(null, data);
+  })
+  // done(null, , data);
 
 };
 
@@ -93,9 +100,18 @@ var createAndSavePerson = function(done) {
 // Create many people using `Model.create()`, using the function argument
 // 'arrayOfPeople'.
 
+var arrayOfPeople = [
+  {name: "Frankie", age: 74, favoriteFoods: ["Del Taco"]},
+  {name: "Sol", age: 76, favoriteFoods: ["roast chicken"]},
+  {name: "Robert", age: 78, favoriteFoods: ["wine"]}
+];
+
 var createManyPeople = function(arrayOfPeople, done) {
-    
-    done(null/*, data*/);
+  Person.create(arrayOfPeople, function(err, data){
+    if(err) return console.log(err);
+    done(null, data);
+  })
+    // done(null, data);
     
 };
 
@@ -111,8 +127,10 @@ var createManyPeople = function(arrayOfPeople, done) {
 // Use the function argument `personName` as search key.
 
 var findPeopleByName = function(personName, done) {
-  
-  done(null/*, data*/);
+  Person.find(function(err, data){
+    done(null, data);
+  });
+  // done(null/*, data*/);
 
 };
 
